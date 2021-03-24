@@ -76,3 +76,28 @@ class DataPushPermission(permissions.BasePermission):
         except models.UserPermissionLink.DoesNotExist:
             # Permission must have been granted explicitly
             return False
+
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    """
+    Grant admins write access - all others get read-only.
+    """
+    def has_permission(self, request, view):
+        return bool(
+            request.method in permissions.SAFE_METHODS or
+            request.user.is_superuser
+        )
+
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Grant owner and admins write access - all others get read-only.
+    """
+    message = 'You do not have permission to access this resource.'
+
+    def has_permission(self, request, view):
+        return bool(
+            request.method in permissions.SAFE_METHODS or
+            view.get_datasource().owner == request.user or
+            request.user.is_superuser
+        )

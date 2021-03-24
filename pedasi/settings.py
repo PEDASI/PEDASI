@@ -119,6 +119,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',
+                'profiles.context_processors.oauth2_enabled',
             ],
         },
     },
@@ -188,6 +189,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Social auth app configuration
 
+OAUTH2_ENABLED = False
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', default=None)
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', default=None)
 
@@ -199,6 +201,8 @@ if SOCIAL_AUTH_GOOGLE_OAUTH2_KEY is not None and SOCIAL_AUTH_GOOGLE_OAUTH2_SECRE
     AUTHENTICATION_BACKENDS += [
         'social_core.backends.google.GoogleOAuth2',
     ]
+
+    OAUTH2_ENABLED = True
 
 SOCIAL_AUTH_PIPELINE = [
     # Get the information we can about the user and return it in a simple
@@ -323,13 +327,14 @@ EMAIL_PORT = config('EMAIL_PORT', cast=int, default=25)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default=None)
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default=None)
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
+SERVER_EMAIL = config('SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool, default=False)
 EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool, default=False)
 
 EMAIL_SUBJECT_PREFIX = '[PEDASI]'
 
-if DEBUG and not EMAIL_HOST:
+if DEBUG and EMAIL_HOST is None:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
     EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'mail')
 
