@@ -34,7 +34,7 @@ pbr==5.1.2
 prov==1.5.2
 pycparser==2.18
 Pygments==2.2.0
-PyJWT==1.6.4
+PyJWT==2.4.0
 pylint==2.1.1
 pylint-django==2.0
 pylint-plugin-utils==0.4
